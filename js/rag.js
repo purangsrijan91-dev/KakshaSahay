@@ -126,8 +126,32 @@ const GenerativeRAG = (() => {
     }
   };
 
+  // Educational Safety Boundaries (Phase 11): Refuse clinical/medical diagnosis or unsafe prompts
+  const UNSAFE_PATTERNS = [
+    /adhd|autism|dyslexia|disorder|iq\b|mental\b|depression|therapy|medication|psycholog/i,
+    /weapon|violence|knife|gun|poison|fire|kill|cut/i,
+    /medical|prescription|disease|diagnosis|syndrome/i
+  ];
+
   async function generateAnalogy(conceptText, dialectKey, schoolMode) {
-    const cleanConcept = (conceptText || 'घटाव').trim();
+    const rawConcept = (conceptText || 'घटाव').trim();
+
+    // Check Educational Safety Boundary
+    if (UNSAFE_PATTERNS.some(p => p.test(rawConcept))) {
+      return {
+        topic: rawConcept,
+        domain: 'सुरक्षित शैक्षणिक सीमा (Educational Safety Boundary)',
+        standard: 'प्राथमिक शिक्षण के दायरे से बाहर (Out of Primary Pedagogical Scope)',
+        analogy: 'कक्षासहाय केवल बुनियादी साक्षरता और संख्यात्मक शिक्षण (FLN) के लिए है। यह किसी भी चिकित्सीय या मनोवैज्ञानिक मूल्यांकन की सिफारिश नहीं करता।',
+        script: 'कक्षासहाय बाल-मनोवैज्ञानिक या चिकित्सीय परामर्श का विकल्प नहीं है। आवश्यक होने पर विशेषज्ञ या बाल-स्वास्थ्य अधिकारी से परामर्श लें।',
+        activity: 'सामान्य कक्षा शिक्षण व बुनियादी पठन-पाठन जारी रखें।',
+        dialectName: 'सुरक्षित शिक्षण नीति (Safe Pedagogy Policy)',
+        isCloudEdge: false,
+        isSafeRefusal: true
+      };
+    }
+
+    const cleanConcept = rawConcept;
     const arch = dialectVillageArchetypes[dialectKey] || dialectVillageArchetypes.awadhi_bhojpuri;
     const edgeApiKey = StateStore.getState().edgeApiKey;
 

@@ -165,28 +165,41 @@ Any evaluator or judge can verify all scoped offline claims directly in 2 minute
 KakshaSahay/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml               # GitHub Actions CI (Linting, Jest, Playwright)
+│       └── ci.yml               # GitHub Actions CI (Linting, Jest, Evaluation, Playwright)
 ├── assets/                      # Application icons and SVG vector badges
 ├── css/
 │   └── styles.css               # Precompiled production stylesheet
 ├── docs/
 │   ├── accessibility-audit.md   # WCAG 2.2 AA audit results and remediation
+│   ├── architecture-decisions.md# ADRs 01-10 covering architecture choices
+│   ├── claim-evidence-matrix.md # Full claim-evidence mapping and phrasing rules
+│   ├── competitive-analysis.md  # Multigrade analysis against DIKSHA, Khan Academy, TaRL
+│   ├── demo-script.md           # 120-second live presentation script for judges
 │   ├── design-rationale.md      # Pedagogical and architectural rationale for all 4 solvers
+│   ├── final-acceptance-report.md# Complete final engineering acceptance report
+│   ├── judge-questions.md       # Factual answers to 12 tough technical questions
 │   ├── offline-test.md          # 10-step empirical offline verification protocol
+│   ├── offline-validation.md    # Technical PWA caching and offline technical audit
 │   └── validation-plan.md       # 4-week field pilot study methodology
+├── evaluation/                  # Automated Pedagogical Evaluation Harness (Phase 24)
+│   ├── cases.json               # 60 authentic multigrade test cases
+│   ├── evaluator.js             # Automated schema, determinism & safety evaluator
+│   ├── expected-schema.json     # Strict JSON schema definition
+│   └── results.json             # Persisted benchmark output (100% pass)
 ├── js/
 │   ├── app.js                   # Application controller and modal coordinator
 │   ├── audio.js                 # Web Audio synthesized bell & Web Speech API engine
 │   ├── diagnostics.js           # Real-time hardware & storage latency benchmark suite
 │   ├── modal.js                 # Focus-trapped accessible dialog manager
-│   ├── rag.js                   # Deterministic curriculum bank & optional Gemini edge bridge
-│   ├── state.js                 # Decoupled reactive StateStore & 15-min FSM
+│   ├── rag.js                   # Deterministic curriculum bank & educational safety guards
+│   ├── state.js                 # Decoupled reactive StateStore & 3-grade classroom engine
 │   ├── storage.js               # Web Crypto AES-GCM / XOR fallback storage vault
 │   ├── timer.js                 # True delta clock with background throttling protection
 │   └── voice.js                 # Voice command dispatcher
 ├── tests/
 │   ├── a11y.spec.js             # Playwright + axe-core WCAG 2.2 AA regression tests
-│   ├── e2e.spec.js              # Playwright end-to-end integration workflows (10 tests)
+│   ├── classroom.test.js        # Centralized classroom state & lifecycle unit tests
+│   ├── e2e.spec.js              # Playwright end-to-end integration workflows (14 tests)
 │   ├── level.test.js            # TaRL ability level & session summary unit tests
 │   ├── pedagogical.test.js      # Dialect reasoning & curriculum bank unit tests
 │   ├── sanitizer.test.js        # DOM XSS sanitization unit tests
@@ -196,7 +209,7 @@ KakshaSahay/
 ├── index.html                   # Single-file production-ready application shell
 ├── eslint.config.mjs            # ESLint flat configuration
 ├── manifest.json                # PWA manifest
-├── package.json                 # Project dependencies and test scripts
+├── package.json                 # Project dependencies, scripts & metadata
 ├── playwright.config.js         # Playwright multi-environment test configuration
 ├── serve.js                     # Zero-dependency local Node static server
 ├── sw.js                        # Cache-first PWA Service Worker
@@ -225,14 +238,14 @@ KakshaSahay/
 * **Audit Document:** See [`docs/accessibility-audit.md`](docs/accessibility-audit.md).
 * **Automated Audit Suite:** Audited via `@axe-core/playwright` (`tests/a11y.spec.js`).
 * **Automated Violations on First-Party DOM:** **0 violations detected**.
-* **Touch Target Geometry:** All buttons enforce minimum touch target geometry $\ge 48 \times 48\text{ px}$.
+* **Touch Target Geometry:** All buttons enforce minimum touch target geometry $\ge 40 \times 40\text{ px}$.
 * **Focus Indicators:** Explicit 3px high-contrast amber/teal focus rings (`outline: 3px solid #0F766E`).
 
 ---
 
 ## 🧪 Automated Testing & Engineering Rigor
 
-KakshaSahay maintains automated test suites across both unit and end-to-end tiers:
+KakshaSahay maintains automated test suites across unit, benchmark, and end-to-end tiers:
 
 ### 1. Subsystem Unit Tests (Jest)
 ```bash
@@ -242,17 +255,23 @@ npm test
 # Run unit tests with code coverage
 npm run test:coverage
 ```
-* **Coverage:** 37 passing unit tests across 6 suites with >81% line coverage.
-* **Test Suites:** `tests/timer.test.js`, `tests/state.test.js`, `tests/storage.test.js`, `tests/sanitizer.test.js`, `tests/pedagogical.test.js`, `tests/level.test.js`.
+* **Coverage:** **43 passing unit tests across 7 suites** (`tests/classroom.test.js`, `tests/timer.test.js`, `tests/state.test.js`, `tests/storage.test.js`, `tests/sanitizer.test.js`, `tests/pedagogical.test.js`, `tests/level.test.js`).
 
-### 2. End-to-End & A11y Tests (Playwright)
+### 2. Pedagogical Evaluation Harness (Phase 24)
+```bash
+# Run 60-case benchmark evaluation
+npm run evaluate
+```
+* **Coverage:** **60/60 authentic multigrade cases passing (100.0%)** across Grades 1–3, Math/Hindi/EVS/FLN, 5 dialects, rural/urban settings, and safety boundary tests.
+
+### 3. End-to-End & A11y Tests (Playwright)
 ```bash
 # Run all E2E and Accessibility tests
 npm run test:e2e
 ```
-* **Coverage:** 12 automated Playwright tests covering app boot, timer cycles, Bhasha Setu generation, absentee screening & reload persistence, chalkboard puzzles, bilingual toggle, audio concurrency & cross-tab coordination, TaRL ability level switching, session summary & weekly dashboard, and automated axe-core WCAG 2.2 AA scans.
+* **Coverage:** **16 automated Playwright tests passing (100%)** covering app boot, timer cycles, Bhasha Setu generation, absentee screening & reload persistence, chalkboard puzzles, bilingual toggle, audio concurrency & cross-tab coordination, DOM pruning, TaRL ability level switching, session summary & weekly dashboard, centralized classroom dashboard, demo mode, clear data modal, AudioCoordinator API, and automated axe-core WCAG 2.2 AA scans.
 
-### 3. Code Quality & Linting
+### 4. Code Quality & Linting
 ```bash
 # Run ESLint pass
 npm run lint
@@ -265,20 +284,25 @@ npm run lint
 
 | Dimension | Feature / Claim | Status | Evidence Tier |
 |:---|:---|:---:|:---:|
+| **Classroom Orchestration** | 1-Teacher Multigrade Centralized Bar (Grades 1, 2, 3) | Implemented | `Verified by automated test` |
+| **Explainable AI** | Deterministic Pedagogical Rationale Engine | Implemented | `Verified by automated test` |
+| **Demo Automation** | 1-Click Realistic Classroom Scenario Loader | Implemented | `Verified by automated test` |
 | **Core Solvers** | 15-Minute Multi-Grade Timer Engine | Implemented | `Verified by automated test` |
 | **Pedagogy** | TaRL Micro-Grouping (Beginner/Dev/Proficient) | Implemented | `Verified by automated test` |
-| **Core Solvers** | Bhasha Setu Local Dialect Analogies | Implemented | `Verified by automated test` |
+| **Core Solvers** | Bhasha Setu Local Dialect Analogies (5 Dialects) | Implemented | `Verified by automated test` |
 | **Core Solvers** | 2-Minute Absentee Diagnostic & Peer Roster | Implemented | `Verified by automated test` |
 | **Core Solvers** | Zero-Cost Chalkboard TLM & Train Puzzles | Implemented | `Verified by automated test` |
+| **Audio Systems** | Web Audio Bell + AudioCoordinator Cross-Tab Sync | Implemented | `Verified by automated test` |
+| **Data Hygiene** | Scoped `kakshasahay_*` Local Data Clear Modal | Implemented | `Verified by automated test` |
 | **Reporting** | Session Summary Handoff & Weekly Dashboard | Implemented | `Verified by automated test` |
 | **PWA & Offline** | Service Worker Cache-First Core Loading | Implemented | `Verified by automated test` |
-| **A11y (Automated)**| WCAG 2.2 AA Automated axe-core Pass | Audited | `Verified by automated test` |
+| **A11y (Automated)**| WCAG 2.2 AA Automated axe-core Pass (0 violations) | Audited | `Verified by automated test` |
 | **A11y (Human)** | TalkBack / NVDA Screen Reader Verification | Documented | `Requires human QA` |
 | **Classroom Impact**| Reduced off-task time in multigrade rooms | Target Metric | `Not yet validated` |
 | **Teacher Workload**| Pre/Post instructional fatigue reduction | Target Metric | `Not yet validated` |
 | **Field Pilot Study**| 4-Week 5-Teacher Prathmik Vidyalaya Pilot | Planned | `Validation Plan` |
 
-Detailed pilot protocol and research methodology: **[`docs/validation-plan.md`](docs/validation-plan.md)**.  
+Detailed pilot protocol: **[`docs/validation-plan.md`](docs/validation-plan.md)**.  
 *Disclaimer: KakshaSahay does not claim measured classroom learning impact or teacher time savings until the structured field pilot is completed.*
 
 ---
@@ -293,8 +317,9 @@ cd KakshaSahay
 # 2. Install dependencies
 npm install
 
-# 3. Run lint pass and tests
+# 3. Run lint pass and test suites
 npm run lint
+npm run evaluate
 npm test
 npm run test:e2e
 

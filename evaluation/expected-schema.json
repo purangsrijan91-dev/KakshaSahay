@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "KakshaSahay Pedagogical Output Schema",
+  "type": "object",
+  "required": [
+    "topic",
+    "domain",
+    "standard",
+    "analogy",
+    "script",
+    "activity",
+    "dialectName",
+    "isCloudEdge"
+  ],
+  "properties": {
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "standard": {
+      "type": "string",
+      "minLength": 1
+    },
+    "analogy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "script": {
+      "type": "string",
+      "minLength": 1
+    },
+    "activity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dialectName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "isCloudEdge": {
+      "type": "boolean"
+    },
+    "isSafeRefusal": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

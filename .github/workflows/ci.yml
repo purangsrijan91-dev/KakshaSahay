@@ -27,6 +27,9 @@ jobs:
       - name: Code Quality & ESLint Pass
         run: npm run lint
 
+      - name: Pedagogical Evaluation Harness Benchmark (Phase 24)
+        run: npm run evaluate
+
       - name: Behavioral Unit Tests & Coverage
         run: npm run test:coverage
 

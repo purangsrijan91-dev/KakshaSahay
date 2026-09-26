@@ -7,6 +7,7 @@
     "start": "node serve.js",
     "build:css": "tailwindcss -i ./src/input.css -o ./css/styles.css --minify",
     "lint": "eslint .",
+    "evaluate": "node evaluation/evaluator.js",
     "test": "jest --runInBand",
     "test:coverage": "jest --coverage --runInBand",
     "test:e2e": "playwright test",

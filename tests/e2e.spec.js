@@ -285,5 +285,115 @@ test.describe('KakshaSahay End-to-End Workflow Verification', () => {
     await expect(summaryContainer).toContainText('Teacher Local Summary');
     await expect(summaryContainer).toContainText('Offline Local Data');
   });
+
+  test('11. Centralized 1-Teacher Multigrade Classroom Dashboard renders simultaneous allocations & explainable rationale', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    const dashboard = page.locator('#classroom-state-dashboard');
+    await expect(dashboard).toBeVisible();
+
+    // Verify 3 simultaneous grade cards
+    const cardG1 = page.locator('#status-card-g1');
+    const cardG2 = page.locator('#status-card-g2');
+    const cardG3 = page.locator('#status-card-g3');
+    await expect(cardG1).toBeVisible();
+    await expect(cardG2).toBeVisible();
+    await expect(cardG3).toBeVisible();
+
+    // In Phase A: Grade 1 active (teacher-led)
+    await expect(cardG1).toHaveClass(/grade-active/);
+    await expect(page.locator('#status-mode-g1')).toContainText(/Teacher-Led|प्रत्यक्ष/);
+
+    // Switch focus
+    const switchBtn = page.locator('#btn-switch-focus');
+    await switchBtn.click();
+
+    // In Phase B: Grade 2 & 3 active
+    await expect(cardG2).toHaveClass(/grade-active/);
+    await expect(cardG3).toHaveClass(/grade-active/);
+
+    // Toggle Explainable Allocation Rationale
+    const btnToggleRationale = page.locator('#btn-toggle-rationale');
+    const rationaleBox = page.locator('#recommendation-rationale-box');
+    await expect(rationaleBox).toBeHidden();
+
+    await btnToggleRationale.click();
+    await expect(rationaleBox).toBeVisible();
+    await expect(rationaleBox).toContainText(/Teacher-Led/);
+    const listItems = rationaleBox.locator('li');
+    expect(await listItems.count()).toBeGreaterThanOrEqual(3);
+
+    // Toggle closed
+    await btnToggleRationale.click();
+    await expect(rationaleBox).toBeHidden();
+  });
+
+  test('12. Demo Classroom Mode loads realistic 3-grade scenario in 1 click', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    const btnDemo = page.locator('#btn-demo-mode');
+    await expect(btnDemo).toBeVisible();
+    await btnDemo.click();
+
+    // Verify student added to roster
+    const rosterContainer = page.locator('#active-roster-container');
+    await expect(rosterContainer).toContainText('Aarav Patel');
+
+    // Verify metric updated
+    const metricLevel = page.locator('#metric-ability-level');
+    await expect(metricLevel).toContainText(/Developing|मध्यम/);
+  });
+
+  test('13. Clear Local Data confirmation modal opens, cancels safely, and clears state on confirm', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    // First load demo mode so there is data to clear
+    await page.locator('#btn-demo-mode').click();
+    await expect(page.locator('#active-roster-container')).toContainText('Aarav Patel');
+
+    const btnClear = page.locator('#btn-clear-classroom-data');
+    const modal = page.locator('#modal-clear-data');
+    const btnCancel = page.locator('#btn-cancel-clear');
+    const btnConfirm = page.locator('#btn-confirm-clear');
+
+    // Open modal
+    await btnClear.click();
+    await expect(modal).toBeVisible();
+
+    // Test cancel
+    await btnCancel.click();
+    await expect(modal).toBeHidden();
+    // Data remains
+    await expect(page.locator('#active-roster-container')).toContainText('Aarav Patel');
+
+    // Open and confirm clear
+    await btnClear.click();
+    await expect(modal).toBeVisible();
+    await btnConfirm.click();
+    await expect(modal).toBeHidden();
+
+    // Roster is now reset
+    await expect(page.locator('#active-roster-container')).toContainText(/All students at expected grade level/i);
+    await expect(page.locator('#metric-remediation-count')).toHaveText('0 Pending');
+  });
+
+  test('14. AudioCoordinator API is exposed globally for automated testing and audio coordination', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    const coordinatorTypes = await page.evaluate(() => {
+      const coord = window.AudioCoordinator;
+      if (!coord) return null;
+      return {
+        hasSpeak: typeof coord.speak === 'function',
+        hasCancel: typeof coord.cancelSpeech === 'function',
+        hasBell: typeof coord.playAcousticBell === 'function'
+      };
+    });
+
+    expect(coordinatorTypes).not.toBeNull();
+    expect(coordinatorTypes.hasSpeak).toBe(true);
+    expect(coordinatorTypes.hasCancel).toBe(true);
+    expect(coordinatorTypes.hasBell).toBe(true);
+  });
 });
 
