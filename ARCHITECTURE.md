@@ -27,7 +27,7 @@ KakshaSahay inverts these assumptions. It is not an "AI chatbot" or video player
 * **Single-File Portable Runtime (`index.html`):** The application runs as an ultra-portable zero-build client-side web application with inline HTML, CSS, and vanilla ES6 JavaScript.
 * **Modular Headless Counterparts (`js/`, `src/`):** Dedicated modular scripts exist for headless Node.js execution, automated Jest unit testing, Playwright browser automation, and offline Service Worker caching.
 * **Storage Layer:** Dual-storage mechanism using browser `localStorage` and Web Crypto AES-GCM / fallback XOR storage with scoped keys (`kakshasahay_*` with backward-compatible migration from `vidyasetu_*`).
-* **Offline Engine:** Service Worker (`sw.js` and `service-worker.js`) with Cache Storage caching all core application assets, enabling 100% disconnected execution.
+* **Offline Engine:** Service Worker (`sw.js`) with Cache Storage caching all core application assets, enabling disconnected execution.
 
 ### 2.2 Target Architecture (90+ Hackathon Hardened)
 ```text
@@ -130,14 +130,12 @@ KakshaSahay inverts these assumptions. It is not an "AI chatbot" or video player
 * **Navigation Requests (`index.html`):** Network-First with Cache Fallback. Guarantees that online users receive fresh deployments while offline teachers launch the application shell instantly from cache with 0ms delay.
 * **Static Assets (CSS, JS, SVG, manifest):** Stale-While-Revalidate. Returns cached version immediately to avoid render blocking, updating the background cache concurrently.
 
-### 5.2 Pre-Cached Assets (`CACHE_NAME = kakshasahay-v15-credibility`):
+### 5.2 Pre-Cached Assets (`CACHE_NAME = kakshasahay-v16-ci-recovery`):
 * `./`
 * `./index.html`
 * `./css/styles.css`
 * `./manifest.json`
-* `./manifest.webmanifest`
 * `./assets/icon.svg`
-* `./service-worker.js`
 * `./sw.js`
 * All modular scripts in `js/` and `src/`.
 
