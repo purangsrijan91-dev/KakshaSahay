@@ -6,6 +6,9 @@
 'use strict';
 
 const StateStore = (() => {
+  const DEFAULT_CYCLE_DURATION_SECONDS = 900; // 15-minute standard rotation cycle
+  const DEFAULT_MAX_INPUT_LENGTH = 60;         // Maximum safe length for teacher inputs
+
   const subscribers = new Set();
 
   // Formal 15-Minute Multi-Grade FSM States
@@ -86,7 +89,7 @@ const StateStore = (() => {
       rotation: {
         active: false,
         cycle: 1,
-        remainingSeconds: 900,
+        remainingSeconds: DEFAULT_CYCLE_DURATION_SECONDS,
         completedRotations: 0
       },
       absenteeStatus: {
@@ -105,7 +108,7 @@ const StateStore = (() => {
     activeTab: 'classroom',
     gradeFocus: 1, // 1 = Grade 1 Direct, 2 = Grade 2/3 Direct, 3 = Grade 3 Direct
     timerRunning: false,
-    secondsRemaining: 900,
+    secondsRemaining: DEFAULT_CYCLE_DURATION_SECONDS,
     startTime: null,
     targetEndTime: null,
     totalCycleSeconds: 900,
@@ -445,7 +448,7 @@ const StateStore = (() => {
 
     state.gradeFocus = 1;
     state.timerRunning = false;
-    state.secondsRemaining = 900;
+    state.secondsRemaining = DEFAULT_CYCLE_DURATION_SECONDS;
     state.fsmState = FSM_STATES.STANDBY;
     state.remediationPendingCount = 0;
     state.diagnosticQueue = [];
@@ -457,7 +460,7 @@ const StateStore = (() => {
   }
 
   // Input Sanitization Helper (Security Layer)
-  function sanitizeInput(str, maxLength = 60) {
+  function sanitizeInput(str, maxLength = DEFAULT_MAX_INPUT_LENGTH) {
     if (typeof str !== 'string') return '';
     return str
       .normalize('NFC')

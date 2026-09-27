@@ -5,10 +5,13 @@
 'use strict';
 
 const TimerEngine = (() => {
+  const DEFAULT_CYCLE_DURATION_SECONDS = 900; // 15-minute standard multigrade cycle
+  const SYNC_TICK_INTERVAL_MS = 500;           // 500ms sync check prevents boundary clipping
+
   let intervalId = null;
   let startTime = null;
   let targetEndTime = null;
-  let totalDurationSeconds = 900;
+  let totalDurationSeconds = DEFAULT_CYCLE_DURATION_SECONDS;
   let onCycleCompleteCallback = null;
 
   function init(onCycleComplete) {
@@ -27,7 +30,7 @@ const TimerEngine = (() => {
     }
   }
 
-  function start(durationSeconds = 900) {
+  function start(durationSeconds = DEFAULT_CYCLE_DURATION_SECONDS) {
     const now = Date.now();
     startTime = now;
     totalDurationSeconds = durationSeconds;
@@ -45,7 +48,7 @@ const TimerEngine = (() => {
     }
 
     if (intervalId) clearInterval(intervalId);
-    intervalId = setInterval(syncDeltaTick, 500); // 500ms check avoids boundary clipping
+    intervalId = setInterval(syncDeltaTick, SYNC_TICK_INTERVAL_MS);
   }
 
   function pause() {
@@ -119,7 +122,7 @@ const TimerEngine = (() => {
     }
   }
 
-  function reset(newDurationSeconds = 900) {
+  function reset(newDurationSeconds = DEFAULT_CYCLE_DURATION_SECONDS) {
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;

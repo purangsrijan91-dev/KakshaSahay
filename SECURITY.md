@@ -44,17 +44,20 @@ All dynamic user inputs (student names, copilot search queries, custom notes) ar
    }
    ```
 
-### 2.3. Cryptographic Storage Vault (Web Crypto API)
-Identifiable student records (names, days absent, remediation diagnostic scores) are protected at rest in browser `localStorage`:
-- **Algorithm:** PBKDF2 key derivation (SHA-256, 1,000 iterations) generating a 256-bit AES-GCM encryption key.
-- **Obfuscation Fallback:** In environments lacking `crypto.subtle` (e.g. legacy WebViews), a UTF-8 XOR cipher prevents casual plaintext inspection.
+### 2.3. Client-Side Data Obfuscation & Tamper Resistance (StorageVault)
+Identifiable student records (names, days absent, remediation diagnostic scores) stored in browser `localStorage` are encoded using client-derived Web Crypto PBKDF2 / AES-GCM or UTF-8 XOR fallback.
+- **Security Boundary Reality:** Because the salt and key derivation passphrase reside client-side in the same browser context, this mechanism provides **local data obfuscation and tamper resistance against casual inspection**, NOT cryptographic confidentiality against a determined attacker with browser DevTools or root access to the device.
 - **Namespace Isolation:** All storage keys are strictly isolated under the `kakshasahay_*` prefix. Application data resets NEVER touch third-party cookies or host session keys.
 
-### 2.4. Zero Telemetry & Privacy by Default
+### 2.4. Content Security Policy (CSP) & Known Limitations
+- **Script Policy:** `script-src 'self'` is strictly enforced with **zero inline scripts** (`'unsafe-inline'` completely eliminated). All application logic runs from versioned external scripts.
+- **Style Policy Known Limitation:** `style-src 'self' 'unsafe-inline'` remains active in this pass to accommodate embedded CSS custom properties and dynamic DOM style updates. Full CSS-in-file extraction is tracked for future iterations.
+
+### 2.5. Zero Telemetry & Privacy by Default
 - **No Cloud Tracking:** KakshaSahay contains **zero** Google Analytics, Facebook Pixels, Sentry beacons, or background phone-home pings.
 - **Offline Sovereignty:** Core classroom solvers operate 100% disconnected from the internet.
 
-### 2.5. Developer Edge AI Key Handling
+### 2.6. Developer Edge AI Key Handling
 - For optional developer evaluation of Gemini Flash, API keys entered in the developer modal are kept in volatile browser memory or developer localStorage.
 - Clear in-app warnings inform developers: *"Developer evaluation only. Do NOT deploy production client-side master keys."*
 

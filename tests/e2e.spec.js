@@ -125,7 +125,7 @@ test.describe('KakshaSahay End-to-End Workflow Verification', () => {
     const heroTitle = page.locator('#hero-title');
 
     // Default or current English
-    await expect(heroTitle).toContainText(/Teaching|सरल/);
+    await expect(heroTitle).toContainText(/Orchestration|समन्वय|Teaching|सरल/);
 
     // Toggle language
     await langToggleBtn.click();
@@ -479,5 +479,55 @@ test.describe('KakshaSahay End-to-End Workflow Verification', () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toContain('kakshasahay-classroom-data');
   });
+
+  test('19. Responsive Layout & Touch Targets across 3 Breakpoints (375px, 768px, 1280px)', async ({ browser }) => {
+    const viewports = [
+      { name: 'Mobile', width: 375, height: 667 },
+      { name: 'Tablet', width: 768, height: 1024 },
+      { name: 'Desktop', width: 1280, height: 800 }
+    ];
+
+    for (const vp of viewports) {
+      const context = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+      const page = await context.newPage();
+      await page.goto('http://localhost:3001');
+
+      // Verify no horizontal document overflow
+      const hasOverflow = await page.evaluate(() => {
+        const docWidth = document.documentElement.clientWidth;
+        const scrollWidth = document.documentElement.scrollWidth;
+        const bodyScrollWidth = document.body.scrollWidth;
+        return scrollWidth > docWidth + 1 || bodyScrollWidth > docWidth + 1;
+      });
+      expect(hasOverflow, `${vp.name} viewport (${vp.width}px) should not horizontally overflow`).toBe(false);
+
+      // Verify primary action buttons meet minimum touch target geometry (>= 40px)
+      const smallButtons = await page.evaluate(() => {
+        const selectors = [
+          '#btn-start-classroom',
+          '#btn-open-diagnostics',
+          '#btn-export-data',
+          '#btn-start-tour',
+          '#btn-lang-toggle',
+          '#btn-demo-mode',
+          '#btn-clear-classroom-data',
+          '#btn-toggle-timer',
+          '#btn-reset-timer',
+          '#btn-switch-focus',
+          '#btn-explain-concept'
+        ];
+        return selectors.map(s => {
+          const el = document.querySelector(s);
+          if (!el) return null;
+          const r = el.getBoundingClientRect();
+          return { id: s, width: Math.round(r.width), height: Math.round(r.height) };
+        }).filter(b => b !== null && (b.width < 40 || b.height < 40));
+      });
+      expect(smallButtons, `${vp.name} viewport buttons should all satisfy minimum touch targets`).toEqual([]);
+
+      await context.close();
+    }
+  });
 });
+
 

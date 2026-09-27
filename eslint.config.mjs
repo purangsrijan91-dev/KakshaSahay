@@ -55,6 +55,7 @@ export default [
         alert: 'readonly',
         Event: 'readonly',
         URL: 'readonly',
+        Blob: 'readonly',
         // In-browser modular singletons shared across script tags
         StateStore: 'readonly',
         StorageVault: 'readonly',

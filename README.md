@@ -5,6 +5,7 @@
 
 [![FLN Mission: NIPUN Bharat](https://img.shields.io/badge/FLN%20Mission-NIPUN%20Bharat%20Aligned-amber.svg)](https://www.education.gov.in/shikshak-parv/nipun-bharat.html)
 [![Live Deployment](https://img.shields.io/badge/Deployment-GitHub%20Pages%20Live-emerald.svg)](https://purangsrijan91-dev.github.io/KakshaSahay/)
+[![KakshaSahay CI Verification](https://github.com/purangsrijan91-dev/KakshaSahay/actions/workflows/ci.yml/badge.svg)](https://github.com/purangsrijan91-dev/KakshaSahay/actions/workflows/ci.yml)
 [![PWA Architecture](https://img.shields.io/badge/PWA-Service%20Worker%20Active-blue.svg)](#offline-first-pwa-architecture)
 [![A11y Standard](https://img.shields.io/badge/Accessibility-WCAG%202.2%20AA%20Audited-green.svg)](docs/accessibility-audit.md)
 [![Automated Tests](https://img.shields.io/badge/Tests-Jest%20%26%20Playwright%20Passing-success.svg)](#automated-testing--engineering-rigor)
@@ -116,7 +117,7 @@ We explicitly distinguish between deterministic offline automation and experimen
 │   │  └──────────────────────┘  └──────────────────────┘  └──────────────────────┘  │   │
 │   │  ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐  │   │
 │   │  │   Curriculum Bank    │  │   StorageVault       │  │   Bilingual Engine   │  │   │
-│   │  │   (Deterministic)    │  │   (AES-GCM / XOR)    │  │   (Instant Toggle)   │  │   │
+│   │  │   (Deterministic)    │  │   (Local Obfusc.)    │  │   (Instant Toggle)   │  │   │
 │   │  └──────────────────────┘  └──────────────────────┘  └──────────────────────┘  │   │
 │   └────────────────────────────────────────────────────────────────────────────────┘   │
 │                                           │                                            │
@@ -193,13 +194,13 @@ KakshaSahay/
 │   ├── modal.js                 # Focus-trapped accessible dialog manager
 │   ├── rag.js                   # Deterministic curriculum bank & educational safety guards
 │   ├── state.js                 # Decoupled reactive StateStore & 3-grade classroom engine
-│   ├── storage.js               # Web Crypto AES-GCM / XOR fallback storage vault
+│   ├── storage.js               # Web Crypto PBKDF2/AES-GCM / XOR local data obfuscation
 │   ├── timer.js                 # True delta clock with background throttling protection
 │   └── voice.js                 # Voice command dispatcher
 ├── tests/
 │   ├── a11y.spec.js             # Playwright + axe-core WCAG 2.2 AA regression tests
 │   ├── classroom.test.js        # Centralized classroom state & lifecycle unit tests
-│   ├── e2e.spec.js              # Playwright end-to-end integration workflows (14 tests)
+│   ├── e2e.spec.js              # Playwright end-to-end integration workflows (19 tests)
 │   ├── level.test.js            # TaRL ability level & session summary unit tests
 │   ├── pedagogical.test.js      # Dialect reasoning & curriculum bank unit tests
 │   ├── sanitizer.test.js        # DOM XSS sanitization unit tests
@@ -224,7 +225,7 @@ KakshaSahay/
 2. **DOM XSS Defense:** All user input (student names, concept queries) is bound via `document.createElement()` and `textContent` text nodes, preventing script injection.
 3. **Content Security Policy (CSP):**
    ```html
-   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://generativelanguage.googleapis.com; frame-src https://drive.google.com; media-src 'self' blob:; img-src 'self' data:;" />
+   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://generativelanguage.googleapis.com; frame-src https://drive.google.com; media-src 'self' blob:; img-src 'self' data:;" />
    ```
 4. **Security Limitations (Honest Disclosure):**
    - Client-side API key entry in the Settings dialog is strictly an **optional developer/demo configuration**. Keys entered in the browser reside in `localStorage`.
@@ -238,7 +239,7 @@ KakshaSahay/
 * **Audit Document:** See [`docs/accessibility-audit.md`](docs/accessibility-audit.md).
 * **Automated Audit Suite:** Audited via `@axe-core/playwright` (`tests/a11y.spec.js`).
 * **Automated Violations on First-Party DOM:** **0 violations detected**.
-* **Touch Target Geometry:** All buttons enforce minimum touch target geometry $\ge 40 \times 40\text{ px}$.
+* **Touch Target Geometry:** All buttons enforce minimum touch target geometry $\ge 44 \times 44\text{ px}$ (WCAG 2.2 SC 2.5.8).
 * **Focus Indicators:** Explicit 3px high-contrast amber/teal focus rings (`outline: 3px solid #0F766E`).
 
 ---
@@ -269,7 +270,7 @@ npm run evaluate
 # Run all E2E and Accessibility tests
 npm run test:e2e
 ```
-* **Coverage:** **20 automated Playwright tests passing (100%)** covering app boot, timer cycles, Bhasha Setu generation, absentee screening & reload persistence, chalkboard puzzles, bilingual toggle, audio concurrency & cross-tab coordination, DOM pruning, TaRL ability level switching, session summary & weekly dashboard, centralized classroom dashboard, demo mode, clear data modal, AudioCoordinator API, Start Classroom session CTA, adaptive teacher overrides, live offline diagnostics self-check, JSON data export, and automated axe-core WCAG 2.2 AA scans.
+* **Coverage:** **21 automated Playwright tests passing (100%)** covering app boot, timer cycles, Bhasha Setu generation, absentee screening & reload persistence, chalkboard puzzles, bilingual toggle, audio concurrency & cross-tab coordination, DOM pruning, TaRL ability level switching, session summary & weekly dashboard, centralized classroom dashboard, demo mode, clear data modal, AudioCoordinator API, Start Classroom session CTA, adaptive teacher overrides, live offline diagnostics self-check, JSON data export, and automated axe-core WCAG 2.2 AA scans.
 
 ### 4. Code Quality & Linting
 ```bash

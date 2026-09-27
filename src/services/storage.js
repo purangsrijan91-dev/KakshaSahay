@@ -71,6 +71,10 @@ function getItem(key, defaultValue = null) {
     }
   } catch (err) {
     console.warn(`[StorageService] Error reading key ${key}:`, err);
+    if (typeof document !== 'undefined') {
+      const liveRegion = document.getElementById('sr-live-region');
+      if (liveRegion) liveRegion.textContent = 'Warning: Local storage read failure. Default data is being used.';
+    }
     return defaultValue;
   }
 }
@@ -89,6 +93,10 @@ function setItem(key, value) {
     return true;
   } catch (err) {
     console.warn(`[StorageService] Error setting key ${key}:`, err);
+    if (typeof document !== 'undefined') {
+      const liveRegion = document.getElementById('sr-live-region');
+      if (liveRegion) liveRegion.textContent = 'Storage save error: Storage quota may be full or disabled in private browsing.';
+    }
     return false;
   }
 }

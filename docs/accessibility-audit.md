@@ -60,6 +60,32 @@
 * **Finding:** Embedded Google Drive video `<iframe>` contains internal un-labelled DOM elements outside first-party control.
 * **Remediation:** Documented boundary isolation; first-party audit excludes third-party cross-origin iframes (`.exclude('#field-video-frame')`). Added accessible title attributes (`title="Classroom Complexity in Indian Primary Schools"`) to the iframe element.
 
+### 6. Measured Color Contrast Ratios (WCAG 2.2 AA Compliance)
+
+Every text/background color pairing in the `:root` design token palette was programmatically measured using the WCAG relative luminance formula ($(L_1 + 0.05) / (L_2 + 0.05)$):
+
+| Pairing | Foreground | Background | Measured Ratio | WCAG 2.2 AA Requirement | Status |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| text-primary on bg-base | `#0F172A` | `#F8FAFC` | **17.06:1** | 4.5:1 | ✅ PASS |
+| text-primary on bg-surface | `#0F172A` | `#FFFFFF` | **17.85:1** | 4.5:1 | ✅ PASS |
+| text-secondary on bg-base | `#334155` | `#F8FAFC` | **9.90:1** | 4.5:1 | ✅ PASS |
+| text-secondary on bg-surface | `#334155` | `#FFFFFF` | **10.35:1** | 4.5:1 | ✅ PASS |
+| text-muted on bg-base | `#64748B` | `#F8FAFC` | **4.55:1** | 4.5:1 | ✅ PASS |
+| text-muted on bg-surface | `#64748B` | `#FFFFFF` | **4.76:1** | 4.5:1 | ✅ PASS |
+| white on accent-teal | `#FFFFFF` | `#0F766E` | **5.47:1** | 4.5:1 | ✅ PASS |
+| white on accent-teal-dark | `#FFFFFF` | `#115E59` | **7.58:1** | 4.5:1 | ✅ PASS |
+| accent-teal on bg-surface | `#0F766E` | `#FFFFFF` | **5.47:1** | 4.5:1 | ✅ PASS |
+| accent-teal on accent-teal-light | `#0F766E` | `#F0FDFA` | **5.25:1** | 4.5:1 | ✅ PASS |
+| white on accent-navy-dark (top trust bar) | `#FFFFFF` | `#0F172A` | **17.85:1** | 4.5:1 | ✅ PASS |
+| white on accent-navy | `#FFFFFF` | `#1E3A8A` | **10.36:1** | 4.5:1 | ✅ PASS |
+| accent-navy on accent-navy-light | `#1E3A8A` | `#EFF6FF` | **9.52:1** | 4.5:1 | ✅ PASS |
+| white on accent-saffron | `#FFFFFF` | `#C2410C` | **5.18:1** | 4.5:1 | ✅ PASS |
+| accent-saffron on accent-saffron-light | `#C2410C` | `#FFF7ED` | **4.88:1** | 4.5:1 | ✅ PASS |
+| white on accent-emerald | `#FFFFFF` | `#047857` | **5.48:1** | 4.5:1 | ✅ PASS |
+| accent-emerald on accent-emerald-light | `#047857` | `#ECFDF5` | **5.21:1** | 4.5:1 | ✅ PASS |
+| white on accent-red | `#FFFFFF` | `#B91C1C` | **6.47:1** | 4.5:1 | ✅ PASS |
+| accent-red on accent-red-light | `#B91C1C` | `#FEF2F2` | **5.91:1** | 4.5:1 | ✅ PASS |
+
 ---
 
 ## 4. Evidence Classification & Remaining Gaps
