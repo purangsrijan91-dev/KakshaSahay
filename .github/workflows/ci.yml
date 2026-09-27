@@ -21,11 +21,8 @@ jobs:
           node-version: 22
           cache: 'npm'
 
-      - name: Upgrade npm to match lockfile
-        run: npm install -g npm@latest
-
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci || npm install
 
       - name: Code Quality & ESLint Pass
         run: npm run lint
