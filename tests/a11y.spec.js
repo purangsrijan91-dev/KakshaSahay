@@ -6,7 +6,7 @@ test.describe('KakshaSahay Accessibility Audit (WCAG 2.2 AA)', () => {
 
   test('Main classroom view satisfies automated WCAG 2.2 AA rules', async ({ page }) => {
     await page.goto('http://localhost:3001');
-    await page.waitForLoadState('networkidle');
+    await page.locator('#classroom-state-dashboard').waitFor({ state: 'visible', timeout: 10000 });
 
     // Exclude third-party embedded Google Drive video player iframe from first-party DOM audit
     const accessibilityScanResults = await new AxeBuilder({ page })

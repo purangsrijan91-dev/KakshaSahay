@@ -255,7 +255,7 @@ npm test
 # Run unit tests with code coverage
 npm run test:coverage
 ```
-* **Coverage:** **43 passing unit tests across 7 suites** (`tests/classroom.test.js`, `tests/timer.test.js`, `tests/state.test.js`, `tests/storage.test.js`, `tests/sanitizer.test.js`, `tests/pedagogical.test.js`, `tests/level.test.js`).
+* **Coverage:** **60 passing unit tests across 8 suites** (`tests/orchestration.test.js`, `tests/classroom.test.js`, `tests/timer.test.js`, `tests/state.test.js`, `tests/storage.test.js`, `tests/sanitizer.test.js`, `tests/pedagogical.test.js`, `tests/level.test.js`).
 
 ### 2. Pedagogical Evaluation Harness (Phase 24)
 ```bash
@@ -269,7 +269,7 @@ npm run evaluate
 # Run all E2E and Accessibility tests
 npm run test:e2e
 ```
-* **Coverage:** **16 automated Playwright tests passing (100%)** covering app boot, timer cycles, Bhasha Setu generation, absentee screening & reload persistence, chalkboard puzzles, bilingual toggle, audio concurrency & cross-tab coordination, DOM pruning, TaRL ability level switching, session summary & weekly dashboard, centralized classroom dashboard, demo mode, clear data modal, AudioCoordinator API, and automated axe-core WCAG 2.2 AA scans.
+* **Coverage:** **20 automated Playwright tests passing (100%)** covering app boot, timer cycles, Bhasha Setu generation, absentee screening & reload persistence, chalkboard puzzles, bilingual toggle, audio concurrency & cross-tab coordination, DOM pruning, TaRL ability level switching, session summary & weekly dashboard, centralized classroom dashboard, demo mode, clear data modal, AudioCoordinator API, Start Classroom session CTA, adaptive teacher overrides, live offline diagnostics self-check, JSON data export, and automated axe-core WCAG 2.2 AA scans.
 
 ### 4. Code Quality & Linting
 ```bash
@@ -280,12 +280,28 @@ npm run lint
 
 ---
 
+## 📚 Complete Architectural & Pedagogical Documentation
+
+* **[`ARCHITECTURE.md`](ARCHITECTURE.md)** / **[`docs/architecture.md`](docs/architecture.md)**: Full component architecture, offline data flow, and complete Mermaid diagram.
+* **[`docs/pedagogical-framework.md`](docs/pedagogical-framework.md)**: FLN / NIPUN Bharat alignment, 15-minute attention span dynamics, and multigrade allocation rationales.
+* **[`docs/pilot-framework.md`](docs/pilot-framework.md)**: 4-week field pilot study methodology across 3–5 rural schools in eastern UP.
+* **[`docs/competitive-landscape.md`](docs/competitive-landscape.md)**: Deep comparative analysis vs DIKSHA, Khan Academy, Duolingo, Pratham TaRL kits, and generic LLMs.
+* **[`SECURITY.md`](SECURITY.md)**: Threat model for rural schools, CSP lockdown, DOM XSS prevention, and Web Crypto storage vault.
+* **[`TESTING.md`](TESTING.md)**: Multi-tier testing strategy, coverage metrics, and local reproduction commands.
+* **[`LIMITATIONS.md`](LIMITATIONS.md)**: Transparent hardware, TTS voice pack, PWA storage eviction, and empirical validation disclaimers.
+* **[`FINAL_AUDIT.md`](FINAL_AUDIT.md)**: Complete QA audit checklist certifying Sections A through F.
+
+---
+
 ## 📊 Credibility Framework: Implemented vs. Planned
 
 | Dimension | Feature / Claim | Status | Evidence Tier |
 |:---|:---|:---:|:---:|
 | **Classroom Orchestration** | 1-Teacher Multigrade Centralized Bar (Grades 1, 2, 3) | Implemented | `Verified by automated test` |
 | **Explainable AI** | Deterministic Pedagogical Rationale Engine | Implemented | `Verified by automated test` |
+| **Adaptive Flow** | 1-Tap "Mark Needs Support" Teacher Override | Implemented | `Verified by automated test` |
+| **Diagnostics** | In-App Live Offline Diagnostics Modal & Self-Check | Implemented | `Verified by automated test` |
+| **Data Sovereignty** | Clean Classroom Data JSON Export | Implemented | `Verified by automated test` |
 | **Demo Automation** | 1-Click Realistic Classroom Scenario Loader | Implemented | `Verified by automated test` |
 | **Core Solvers** | 15-Minute Multi-Grade Timer Engine | Implemented | `Verified by automated test` |
 | **Pedagogy** | TaRL Micro-Grouping (Beginner/Dev/Proficient) | Implemented | `Verified by automated test` |
@@ -302,7 +318,7 @@ npm run lint
 | **Teacher Workload**| Pre/Post instructional fatigue reduction | Target Metric | `Not yet validated` |
 | **Field Pilot Study**| 4-Week 5-Teacher Prathmik Vidyalaya Pilot | Planned | `Validation Plan` |
 
-Detailed pilot protocol: **[`docs/validation-plan.md`](docs/validation-plan.md)**.  
+Detailed pilot protocol: **[`docs/pilot-framework.md`](docs/pilot-framework.md)**.  
 *Disclaimer: KakshaSahay does not claim measured classroom learning impact or teacher time savings until the structured field pilot is completed.*
 
 ---

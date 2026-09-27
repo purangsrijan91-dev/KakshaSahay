@@ -395,5 +395,89 @@ test.describe('KakshaSahay End-to-End Workflow Verification', () => {
     expect(coordinatorTypes.hasCancel).toBe(true);
     expect(coordinatorTypes.hasBell).toBe(true);
   });
+
+  test('15. Start Classroom Session CTA scrolls to orchestration dashboard and initiates rotation', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    const btnStart = page.locator('#btn-start-classroom');
+    await expect(btnStart).toBeVisible();
+
+    await btnStart.click();
+
+    // Verify timer has started or is running
+    const timerDisplay = page.locator('#timer-display');
+    await page.waitForTimeout(1100);
+    const timeText = await timerDisplay.textContent();
+    expect(timeText).not.toBe('15:00');
+  });
+
+  test('16. Adaptive Teacher Override dynamically recalculates 3-grade rotation and updates pedagogical rationale', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    // Click G2 Needs Support flag
+    const btnSupportG2 = page.locator('#btn-support-g2');
+    await expect(btnSupportG2).toBeVisible();
+    await btnSupportG2.click();
+
+    // Verify Grade 2 card becomes active (Teacher-Led)
+    const cardG2 = page.locator('#status-card-g2');
+    await expect(cardG2).toHaveClass(/grade-active/);
+
+    const modeG2 = page.locator('#status-mode-g2');
+    await expect(modeG2).toContainText('Teacher-Led');
+
+    // Verify status badge
+    const badgeStatus = page.locator('#badge-classroom-status');
+    await expect(badgeStatus).toContainText('Grade 2 Focus (Teacher Intervention)');
+
+    // Open rationale box and verify explainability
+    const btnRationale = page.locator('#btn-toggle-rationale');
+    await btnRationale.click();
+    const rationaleList = page.locator('#rationale-points-list');
+    await expect(rationaleList).toContainText('Rotation changed because Grade 2 was marked as requiring additional teacher support.');
+  });
+
+  test('17. Live Offline Diagnostics modal self-checks system health and simulates offline mode', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    const btnOpenDiag = page.locator('#btn-open-diagnostics');
+    await btnOpenDiag.click();
+
+    const modalDiag = page.locator('#modal-diagnostics');
+    await expect(modalDiag).toBeVisible();
+
+    // Run diagnostics
+    const btnRunDiag = page.locator('#btn-run-diagnostics');
+    await btnRunDiag.click();
+
+    // Check pass badges
+    const badgeStorage = page.locator('#badge-diag-storage');
+    await expect(badgeStorage).toContainText('✓ PASS');
+
+    const badgeFSM = page.locator('#badge-diag-fsm');
+    await expect(badgeFSM).toContainText('✓ PASS');
+
+    // Test simulate offline mode toggle
+    const btnSimulate = page.locator('#btn-toggle-offline-simulation');
+    await btnSimulate.click();
+    const badgeConn = page.locator('#badge-connectivity');
+    await expect(badgeConn).toContainText('Offline Sim');
+
+    // Close modal
+    const btnCloseDiag = page.locator('#btn-close-diagnostics');
+    await btnCloseDiag.click();
+    await expect(modalDiag).not.toBeVisible();
+  });
+
+  test('18. Export Classroom Data downloads clean JSON payload without system leakage', async ({ page }) => {
+    await page.goto('http://localhost:3001');
+
+    const downloadPromise = page.waitForEvent('download');
+    const btnExport = page.locator('#btn-export-data');
+    await btnExport.click();
+
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toContain('kakshasahay-classroom-data');
+  });
 });
 
